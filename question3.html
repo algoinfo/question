@@ -12,6 +12,7 @@
     <style>
         .test {
             background: red;
+            width: 100px;
         }
     </style>
     <div id="js-test" class="test">
@@ -29,10 +30,9 @@
         (function () {
             const $div = document.getElementById('js-test');
             let left = 100;
-            $div.style.width = 100 + 'px';
             function render() {
                 if (left > 500) { return; }
-                left = left + 20;
+                left += 10;
                 $div.style.width = left + 'px';
                 // setTimeout(render, 1000 / 60);
                 // setTimeout(render, 1000 / 10);
@@ -47,11 +47,9 @@
         // (function () {
         //     const $div = document.getElementById('js-test');
         //     let left = 100;
-        //     $div.style.width = 100 + 'px';
         //     function frameAnimation() {
         //         if (left > 500) { return; }
-        //         // 执行动画操作的细节
-        //         left = left + 10;
+        //         left += 10;
         //         $div.style.width = left + 'px';
         //         window.requestAnimationFrame(frameAnimation);
         //     }
