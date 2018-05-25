@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <p>平时碰到了浏览器tab页面上显示忙提示的情况，在我的印象里，script脚本不会阻塞在它之前的dom解析与渲染，可是下面的情况让我很疑惑。</p>
+    <p>基于chrome测试， 对一些概念的理解比较模糊。</p>
+    <!-- 现象：p标签文字没有快速显示出来，浏览器的tab上有旋转的忙提示 -->
+    <!-- 疑惑：1. script脚本不是不会阻塞在它之前的dom解析与渲染吗， 那为什么p标签文字迟迟才显示呢？
+            2. 浏览器处于忙提示是因为script节点也是dom树中的节点，在dom树没有解析完毕之前浏览器都会显示忙提示吗？
+    -->
+    <script>
+        for (var index = 0; index < 100000; index++) {
+            console.log(index);
+        }
+    </script>
+
+    <!-- 现象： p标签文字没有快速显示出来，浏览器的tab上有旋转的忙提示 -->
+    <!-- 疑惑： 1. 第一个问题同上。
+        2. 我把大循环放在了DOMContentLoaded事件触发后，这时候dom不是已经解析完毕吗？ 为什么浏览器的tab上仍然有旋转的忙提示？ 
+    -->
+    <!-- <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            for (var index = 0; index < 30000; index++) {
+                console.log(index);
+            }
+        });
+    </script> -->
+
+    <!-- 现象: p标签文字没有快速显示出来，浏览器的tab上没有旋转的忙提示。 -->
+    <!-- 疑惑：1. 第一个问题同上。
+        2. setimeout的时间到达后，会产生一个新的宏任务加入到任务队列中，在事件循环的下一轮取到。
+        当前的script脚本也是宏队列，在settimeout执行完似乎没有马上执行settimeout的宏队列，否则会显示忙提示。
+        那settimeout执行完后发生了什么呢, 是把执行权重新交给渲染线程吗？
+    -->
+    <!-- <script>
+        setTimeout(function () {
+            for (var index = 0; index < 50000; index++) {
+                console.log(index);
+            }
+        });
+    </script> -->
+
+    <!--  p标签文字快速显示出来， 浏览器的tab上没有旋转的忙提示。-->
+    <!-- 疑惑： 1. 为什么这个情况下p标签的文字能够快速的显示出来？ -->
+    <!-- <script>
+        setTimeout(function () {
+            for (var index = 0; index < 100000; index++) {
+                console.log(index);
+            }
+        }, 1000); -->
+    </script>
+</body>
+
+</html>

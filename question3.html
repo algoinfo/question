@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <style>
+        .test {
+            background: red;
+        }
+    </style>
+    <div id="js-test" class="test">
+        test div
+    </div>
+    <script>
+        // settimeout方式实现动画
+        // 疑惑： 1.对于丢帧的概念不清晰。我现在的理解是丢帧表示本该在这一帧显示到屏幕上的变化被挤压到后面的某一帧，和其他的style变化一起刷出了，使得页面没有呈现出这一帧的变化。
+        // 浏览器大概17ms刷新一遍，这个17ms刷新的时候是把浏览器之前存储的优化重排队列一次性全部刷新出去吗？
+        // 我的想法：用setTimeout(render, 1000 / 10）看看动画效果，因为style变化的间隔时间比较长，肉眼可以发现，会觉得卡断。但是不会失去每一个变化。
+        // 用setTimeout(render, 1000 / 100），因为style之间变化的时间太短，每10ms发生了一次style的改变，
+        // 第一次style变化是可以正常渲染的，第二次style变化因为10ms<16ms, 所以在浏览器16ms刷出的时候也会正常刷出变化，
+        // 但是第三次style变化， 是20ms, 第四次style变化是30ms, 第三次和第四次都会在32ms的时候由浏览器刷出, 因此第三次的变化没有以浏览器
+        // 一帧的方式呈现出来，而是被挤压和第四次一起刷出了。所以这里是第三次发生了丢帧吗？
+        (function () {
+            const $div = document.getElementById('js-test');
+            let left = 100;
+            $div.style.width = 100 + 'px';
+            function render() {
+                if (left > 500) { return; }
+                left = left + 20;
+                $div.style.width = left + 'px';
+                // setTimeout(render, 1000 / 60);
+                // setTimeout(render, 1000 / 10);
+                setTimeout(render, 1000 / 100);
+            }
+            setTimeout(render);
+        })();
+        // requestAnimationFrame方式实现动画
+        // requestAnimationFrame支持17ms一次和根据程序执行时长和浏览器的情况自行调整FPS。
+        // 如果每一帧中程序的执行时间过长了，那么这一帧style的变化来不及在下一次重绘之前输出到页面，只能被挤压到某一帧和其他结果一起刷出。
+        // requestAnimationFrame是根据程序的执行时长来自行调整FPS的话，它能保证不丢帧，但是无法避免看起来卡顿。因此我们还是要做好程序的时长控制对吗？
+        // (function () {
+        //     const $div = document.getElementById('js-test');
+        //     let left = 100;
+        //     $div.style.width = 100 + 'px';
+        //     function frameAnimation() {
+        //         if (left > 500) { return; }
+        //         // 执行动画操作的细节
+        //         left = left + 10;
+        //         $div.style.width = left + 'px';
+        //         window.requestAnimationFrame(frameAnimation);
+        //     }
+        //     window.requestAnimationFrame(frameAnimation);
+        // })();
+    </script>
+</body>
+
+</html>

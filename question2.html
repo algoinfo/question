@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <p>脚本在对window.location.href设置之后进行了for循环操作，输出的window.location.href也确实改变成taobao了， 但是当前页面要等到for循环全部执行完毕才真正跳转到新页面。这是为什么？
+    </p>
+    <p>基于chrome</p>
+    <script>
+        window.location.href = "http://www.taobao.com/";
+        console.log('window.location.href', window.location.href);
+        for (var index = 0; index < 100000; index++) {
+            console.log(index);
+        }
+    </script>
+</body>
+
+</html>
