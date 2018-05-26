@@ -21,18 +21,6 @@
         }
     </script>
 
-    <!-- 现象： p标签文字没有快速显示出来，浏览器的tab上有旋转的忙提示 -->
-    <!-- 疑惑： 1. 第一个问题同上。
-        2. 我把大循环放在了DOMContentLoaded事件触发后，这时候dom不是已经解析完毕吗？ 为什么浏览器的tab上仍然有旋转的忙提示？ 
-    -->
-    <!-- <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            for (var index = 0; index < 30000; index++) {
-                console.log(index);
-            }
-        });
-    </script> -->
-
     <!-- 现象: p标签文字没有快速显示出来，浏览器的tab上没有旋转的忙提示。 -->
     <!-- 疑惑：1. 第一个问题同上。
         2. setimeout的时间到达后，会产生一个新的宏任务加入到任务队列中，在事件循环的下一轮取到。
